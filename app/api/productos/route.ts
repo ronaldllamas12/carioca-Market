@@ -1,43 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import mongoose, { Schema, model, models } from "mongoose";
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { connectToDatabase } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/marketplace";
-
-// Conexión a MongoDB
-if (mongoose.connection.readyState === 0) {
-    mongoose.connect(MONGODB_URI, {
-        dbName: "marketplace",
-    });
-}
-
-// Definir el esquema y modelo de producto
-const productoSchema = new Schema({
-    nombre: String,
-    categoria: String,
-    precio: String,
-    telefono: String,
-    imagen: String, // URL base64 o URL pública
-});
-
-const Producto = models.Producto || model("Producto", productoSchema);
-
-// Función auxiliar para verificar si el usuario es admin
-async function isAdmin() {
-    const session = await getServerSession();
-    if (!session?.user?.email) return false;
-
-    const { db } = await connectToDatabase();
-    const user = await db.collection('users').findOne({
-        email: session.user.email,
-        role: 'admin'
-    });
-
-    return !!user;
-}
-
-// GET: Obtener todos los productos (público)
+// GET: Obtener todos los productos
 export async function GET() {
     try {
         const { db } = await connectToDatabase();
@@ -55,7 +21,21 @@ export async function GET() {
 // POST: Crear nuevo producto (solo admin)
 export async function POST(request: Request) {
     try {
-        if (!await isAdmin()) {
+        const session = await getServerSession();
+        if (!session?.user?.email) {
+            return NextResponse.json(
+                { message: 'No autorizado' },
+                { status: 401 }
+            );
+        }
+
+        const { db } = await connectToDatabase();
+        const user = await db.collection('users').findOne({
+            email: session.user.email,
+            role: 'admin'
+        });
+
+        if (!user) {
             return NextResponse.json(
                 { message: 'No autorizado' },
                 { status: 401 }
@@ -63,11 +43,10 @@ export async function POST(request: Request) {
         }
 
         const data = await request.json();
-        const { db } = await connectToDatabase();
-
         const result = await db.collection('productos').insertOne({
             ...data,
-            createdAt: new Date()
+            createdAt: new Date(),
+            updatedAt: new Date()
         });
 
         return NextResponse.json(
