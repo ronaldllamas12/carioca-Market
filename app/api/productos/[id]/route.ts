@@ -58,7 +58,7 @@ export async function DELETE(
 // PUT: Actualizar producto (solo admin)
 export async function PUT(
     request: Request,
-    { params }: { params: { id: string } }
+    context: { params: { id: string } }
 ) {
     try {
         if (!await isAdmin()) {
@@ -72,7 +72,7 @@ export async function PUT(
         const { db } = await connectToDatabase();
 
         const result = await db.collection('productos').updateOne(
-            { _id: new ObjectId(params.id) },
+            { _id: new ObjectId(context.params.id) },
             { $set: { ...data, updatedAt: new Date() } }
         );
 
