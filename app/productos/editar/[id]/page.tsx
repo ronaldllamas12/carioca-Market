@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import ImageUpload from '../../../components/ImageUpload';
 import { Package, Tag, Phone, Image as ImageIcon, Info } from 'lucide-react';
 import React from 'react';
@@ -10,7 +9,6 @@ import { CATEGORIAS } from '../../../config/categorias';
 export default function EditarComercio() {
     const router = useRouter();
     const params = useParams();
-    const { data: session } = useSession();
     const [formData, setFormData] = useState({
         nombre: '',
         categoria: '',

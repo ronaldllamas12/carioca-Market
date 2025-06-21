@@ -85,27 +85,6 @@ export default function RegistroProducto() {
         }
     };
 
-    const formatPrice = (value: string) => {
-        // Remover caracteres no numéricos excepto el punto decimal
-        const numericValue = value.replace(/[^\d.]/g, '');
-
-        // Si está vacío, retornar vacío
-        if (!numericValue) return '';
-
-        // Asegurar que solo haya un punto decimal
-        const parts = numericValue.split('.');
-        if (parts.length > 2) {
-            return parts[0] + '.' + parts.slice(1).join('');
-        }
-
-        // Limitar a dos decimales
-        if (parts.length === 2) {
-            return parts[0] + '.' + parts[1].slice(0, 2);
-        }
-
-        return numericValue;
-    };
-
     const formatPhone = (value: string) => {
         // Remover caracteres no numéricos
         const numericValue = value.replace(/\D/g, '');

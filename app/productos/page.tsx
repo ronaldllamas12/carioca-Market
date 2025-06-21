@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Navbar from "../components/Navbar";
 import RegistroProducto from "../components/RegistroProducto";
-import { Search, MessageCircle, Plus, Edit, Phone, XCircle } from 'lucide-react';
+import { Search, MessageCircle, Plus, Edit, XCircle } from 'lucide-react';
 import Image from "next/image";
 
 interface Comercio {
