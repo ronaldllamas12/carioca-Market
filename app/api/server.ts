@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { connectToDatabase } from '@/lib/mongodb';
-import { ObjectId } from 'mongodb';
 
 // Función auxiliar para verificar si el usuario es admin
 async function isAdmin() {

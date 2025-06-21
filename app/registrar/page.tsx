@@ -2,15 +2,25 @@
 import { useState, useRef } from "react";
 import Navbar from "../components/Navbar";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
-const categorias = ["Tecnología", "Hogar", "Deportes"];
-
-// Para compartir productos entre páginas, usaremos localStorage temporalmente
-function guardarProducto(producto: any) {
-    const productos = JSON.parse(localStorage.getItem("productos") || "[]");
-    productos.push(producto);
-    localStorage.setItem("productos", JSON.stringify(productos));
-}
+const categorias = ["Electrónica",
+    "Ropa",
+    "Hogar",
+    "Deportes",
+    "Juguetes",
+    "Libros",
+    "Mascotas",
+    "viverres y Abarrotes",
+    "Tecnologia",
+    "Perfumeria",
+    "Comida Rapida",
+    "Restaurante",
+    "Belleza y cosmetologia",
+    "Turismo",
+    "Construccion",
+    "Variedades",
+    "Otros",];
 
 export default function RegistrarProducto() {
     const [nombre, setNombre] = useState("");
@@ -45,7 +55,7 @@ export default function RegistrarProducto() {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ nombre, categoria, precio, telefono, imagen: imagenBase64 }),
                 });
-                setConfirmacion("¡Producto registrado exitosamente!");
+                setConfirmacion("¡Comercio registrado exitosamente!");
                 setNombre("");
                 setCategoria(categorias[0]);
                 setPrecio("");
@@ -89,7 +99,7 @@ export default function RegistrarProducto() {
                         onClick={() => inputFileRef.current?.click()}
                     >
                         {preview ? (
-                            <img src={preview} alt="Preview" className="w-24 h-24 object-cover rounded mb-2" />
+                            <Image src={preview} alt="Preview" className="w-24 h-24 object-cover rounded mb-2" width={96} height={96} />
                         ) : (
                             <>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-blue-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5-5m0 0l5 5m-5-5v12" /></svg>
@@ -113,8 +123,6 @@ export default function RegistrarProducto() {
                         {categorias.map(cat => <option key={cat}>{cat}</option>)}
                     </select>
 
-                    <label className="font-semibold">Precio</label>
-                    <input type="text" value={precio} onChange={e => setPrecio(e.target.value)} required className="p-2 border rounded" />
 
                     <label className="font-semibold">Número de WhatsApp</label>
                     <input type="text" value={telefono} onChange={e => setTelefono(e.target.value)} required className="p-2 border rounded" />

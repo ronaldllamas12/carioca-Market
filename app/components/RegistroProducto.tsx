@@ -1,34 +1,18 @@
 "use client";
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { X, Package, DollarSign, Tag, Phone, Image as ImageIcon, Info } from 'lucide-react';
 import ImageUpload from './ImageUpload';
-
-const CATEGORIAS = [
-    "Electrónica",
-    "Ropa",
-    "Hogar",
-    "Deportes",
-    "Juguetes",
-    "Libros",
-    "Mascotas",
-    "viverres y Abarrotes",
-    "Tecnologia",
-    "Perfumeria",
-    "Comida Rapida",
-    "Restaurante",
-    "Belleza y cosmetologia",
-    "Otros"
-];
+import { CATEGORIAS } from '../config/categorias';
 
 export default function RegistroProducto() {
     const { data: session } = useSession();
     const [formData, setFormData] = useState({
         nombre: '',
-        precio: '',
         categoria: '',
         imagen: '',
+        productosVenta: '',
         telefono: ''
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -37,27 +21,20 @@ export default function RegistroProducto() {
 
     const validateForm = () => {
         const newErrors: Record<string, string> = {};
-
         if (!formData.nombre.trim()) {
-            newErrors.nombre = 'El nombre es requerido';
+            newErrors.nombre = 'El nombre del comercio es requerido';
         }
-
-        if (!formData.precio.trim()) {
-            newErrors.precio = 'El precio es requerido';
-        } else if (!/^\d+(\.\d{1,2})?$/.test(formData.precio)) {
-            newErrors.precio = 'Ingresa un precio válido (ej: 100.50)';
-        }
-
         if (!formData.categoria) {
             newErrors.categoria = 'Selecciona una categoría';
         }
-
+        if (!formData.productosVenta.trim()) {
+            newErrors.productosVenta = 'Debes ingresar los productos en venta';
+        }
         if (!formData.telefono.trim()) {
             newErrors.telefono = 'El teléfono es requerido';
-        } else if (!/^\d{10}$/.test(formData.telefono.replace(/\D/g, ''))) {
+        } else if (!/^[0-9]{10}$/.test(formData.telefono.replace(/\D/g, ''))) {
             newErrors.telefono = 'Ingresa un número de 10 dígitos';
         }
-
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -81,7 +58,7 @@ export default function RegistroProducto() {
             });
 
             if (!res.ok) {
-                throw new Error('Error al registrar producto');
+                throw new Error('Error al registrar la Tienda Virtual');
             }
 
             setShowSuccess(true);
@@ -90,13 +67,13 @@ export default function RegistroProducto() {
             }, 1500);
         } catch (error) {
             console.error('Error:', error);
-            setErrors({ submit: 'Error al registrar producto' });
+            setErrors({ submit: 'Error al registrar La tienda Virtual' });
         } finally {
             setIsSubmitting(false);
         }
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
@@ -172,7 +149,7 @@ export default function RegistroProducto() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50">
             <div className="bg-white rounded-2xl p-4 sm:p-8 w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-center mb-4 sm:mb-6">
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Registrar Nuevo Producto</h2>
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Registrar Nuevo Comercio</h2>
                     <button
                         onClick={() => window.location.reload()}
                         className="text-gray-500 hover:text-gray-700 transition-colors p-2 -m-2"
@@ -183,7 +160,7 @@ export default function RegistroProducto() {
 
                 {showSuccess && (
                     <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg text-sm sm:text-base">
-                        ¡Producto registrado exitosamente!
+                        ¡Comercio registrado exitosamente!
                     </div>
                 )}
 
@@ -192,42 +169,19 @@ export default function RegistroProducto() {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 flex items-center gap-2 mb-1 sm:mb-2">
                                 <Package size={16} className="text-blue-600" />
-                                Nombre del Producto
+                                Nombre del Comercio
                             </label>
                             <input
                                 type="text"
                                 name="nombre"
                                 value={formData.nombre}
                                 onChange={handleChange}
-                                placeholder="Ej: iPhone 13 Pro Max"
+                                placeholder="Ej: Variedades Iguazu"
                                 className={`w-full px-3 sm:px-4 py-2 rounded-lg border text-sm sm:text-base ${errors.nombre ? 'border-red-500' : 'border-gray-300'
                                     } focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                             />
                             {errors.nombre && (
                                 <p className="mt-1 text-xs sm:text-sm text-red-500">{errors.nombre}</p>
-                            )}
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 flex items-center gap-2 mb-1 sm:mb-2">
-                                <DollarSign size={16} className="text-green-600" />
-                                Precio
-                            </label>
-                            <div className="relative">
-                                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$ </span>
-                                <input
-                                    type="text"
-                                    name="precio"
-                                    value={formData.precio}
-                                    onChange={handlePriceChange}
-                                    placeholder="   0.00"
-                                    inputMode="decimal"
-                                    className={`w-full pl-8 pr-3 sm:px-4 py-2 rounded-lg border text-sm sm:text-base ${errors.precio ? 'border-red-500' : 'border-gray-300'
-                                        } focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
-                                />
-                            </div>
-                            {errors.precio && (
-                                <p className="mt-1 text-xs sm:text-sm text-red-500">{errors.precio}</p>
                             )}
                         </div>
 
@@ -253,7 +207,25 @@ export default function RegistroProducto() {
                             )}
                         </div>
 
-                        <div>
+                        <div className="sm:col-span-2">
+                            <label className="block text-sm font-medium text-gray-700 flex items-center gap-2 mb-1 sm:mb-2">
+                                <Package size={16} className="text-green-600" />
+                                Productos en venta (separados por coma)
+                            </label>
+                            <textarea
+                                name="productosVenta"
+                                value={formData.productosVenta}
+                                onChange={handleChange}
+                                placeholder="Ej: Zapatos, Sandalias, Botas"
+                                className={`w-full px-3 sm:px-4 py-2 rounded-lg border text-sm sm:text-base ${errors.productosVenta ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                                rows={2}
+                            />
+                            {errors.productosVenta && (
+                                <p className="mt-1 text-xs sm:text-sm text-red-500">{errors.productosVenta}</p>
+                            )}
+                        </div>
+
+                        <div className="sm:col-span-2">
                             <label className="block text-sm font-medium text-gray-700 flex items-center gap-2 mb-1 sm:mb-2">
                                 <Phone size={16} className="text-orange-600" />
                                 Teléfono de Contacto
@@ -275,21 +247,15 @@ export default function RegistroProducto() {
                         </div>
                     </div>
 
-                    <div>
+                    <div className="sm:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 flex items-center gap-2 mb-1 sm:mb-2">
                             <ImageIcon size={16} className="text-blue-600" />
-                            Imagen del Producto
+                            Imagen o Logo del Comercio
                         </label>
-                        <div className="mt-2">
-                            <ImageUpload
-                                value={formData.imagen}
-                                onChange={(url) => setFormData(prev => ({ ...prev, imagen: url }))}
-                            />
-                        </div>
-                        <p className="mt-2 text-xs sm:text-sm text-gray-500 flex items-center gap-1">
-                            <Info size={14} />
-                            Recomendado: Imagen cuadrada de al menos 800x800px
-                        </p>
+                        <ImageUpload
+                            value={formData.imagen}
+                            onChange={(url) => setFormData(prev => ({ ...prev, imagen: url }))}
+                        />
                     </div>
 
                     {errors.submit && (

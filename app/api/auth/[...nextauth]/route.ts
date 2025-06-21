@@ -1,7 +1,8 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { compare } from "bcryptjs";
 import { connectToDatabase } from "@/lib/mongodb";
+import type { JWT } from "next-auth/jwt";
+import type { Session, User } from "next-auth";
 
 const handler = NextAuth({
     providers: [
@@ -14,32 +15,16 @@ const handler = NextAuth({
             async authorize(credentials) {
                 try {
                     if (!credentials?.email || !credentials?.password) {
-                        console.log('Credenciales faltantes');
                         throw new Error('Credenciales requeridas');
                     }
-
-                    console.log('Intentando autenticar:', credentials.email);
                     const { db } = await connectToDatabase();
-
-                    const user = await db.collection('users').findOne({
-                        email: credentials.email,
-                        role: 'admin'
-                    });
-
+                    const user = await db.collection('users').findOne({ email: credentials.email, role: 'admin' });
                     if (!user) {
-                        console.log('Usuario no encontrado');
                         throw new Error('Usuario no encontrado');
                     }
-
-                    console.log('Usuario encontrado, verificando contraseña');
-                    const isValid = await compare(credentials.password, user.password);
-
-                    if (!isValid) {
-                        console.log('Contraseña incorrecta');
+                    if (user.password !== credentials.password) {
                         throw new Error('Contraseña incorrecta');
                     }
-
-                    console.log('Autenticación exitosa');
                     return {
                         id: user._id.toString(),
                         email: user.email,
@@ -47,22 +32,21 @@ const handler = NextAuth({
                         role: user.role
                     };
                 } catch (error) {
-                    console.error('Error en authorize:', error);
                     throw error;
                 }
             }
         })
     ],
     callbacks: {
-        async jwt({ token, user }) {
-            if (user) {
-                token.role = user.role;
+        async jwt({ token, user }: { token: JWT, user?: User | { role?: string } }) {
+            if (user && 'role' in user) {
+                (token as JWT & { role?: string }).role = (user as { role?: string }).role;
             }
             return token;
         },
-        async session({ session, token }) {
-            if (session?.user) {
-                (session.user as any).role = token.role;
+        async session({ session, token }: { session: Session, token: JWT & { role?: string } }) {
+            if (session?.user && 'role' in token) {
+                (session.user as typeof session.user & { role?: string }).role = token.role;
             }
             return session;
         }

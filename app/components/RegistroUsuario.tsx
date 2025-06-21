@@ -37,8 +37,8 @@ export default function RegistroUsuario() {
 
             // Redirigir al usuario a la página de inicio de sesión
             router.push('/auth/signin');
-        } catch (error: any) {
-            setError(error.message);
+        } catch (error: unknown) {
+            setError(error instanceof Error ? error.message : 'Error desconocido');
         } finally {
             setIsLoading(false);
         }
