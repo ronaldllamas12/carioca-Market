@@ -68,8 +68,12 @@ export default function EditarComercio() {
             if (!res.ok) throw new Error(data.message || 'Error al actualizar');
             setSuccess('¡Comercio actualizado exitosamente!');
             setTimeout(() => router.push('/productos'), 1500);
-        } catch (err: any) {
-            setError(err.message || 'Error al actualizar');
+        } catch (err) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError('Ocurrió un error inesperado');
+            }
         }
     };
 

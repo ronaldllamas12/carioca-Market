@@ -25,6 +25,7 @@ export async function POST(request: Request) {
         });
         return Response.json({ message: 'Usuario admin creado exitosamente' }, { status: 201 });
     } catch (error) {
+        console.error('Error al crear admin:', error);
         return Response.json({ message: 'Error al crear admin' }, { status: 500 });
     }
 } 

@@ -38,6 +38,7 @@ export async function POST(request: Request) {
             { status: 201 }
         );
     } catch (error) {
+        console.error('Error al registrar usuario:', error);
         return Response.json(
             { message: 'Error al registrar usuario' },
             { status: 500 }

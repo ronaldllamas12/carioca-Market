@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { X, Package, DollarSign, Tag, Phone, Image as ImageIcon, Info } from 'lucide-react';
+import { X, Package, Tag, Phone, Image as ImageIcon } from 'lucide-react';
 import ImageUpload from './ImageUpload';
 import { CATEGORIAS } from '../config/categorias';
 
@@ -115,18 +115,6 @@ export default function RegistroProducto() {
 
         // Limitar a 10 dígitos
         return numericValue.slice(0, 10);
-    };
-
-    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const formattedValue = formatPrice(e.target.value);
-        setFormData(prev => ({
-            ...prev,
-            precio: formattedValue
-        }));
-        // Limpiar error si existe
-        if (errors.precio) {
-            setErrors(prev => ({ ...prev, precio: '' }));
-        }
     };
 
     const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
