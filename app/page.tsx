@@ -4,19 +4,21 @@ import { ShoppingCart } from 'lucide-react';
 
 export default function Home() {
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-10 max-w-screen-xxl mx-auto">
+    <main className="flex flex-col items-center justify-center min-h-screen p-10 max-w-screen-xxl mx-auto bg-gray-100">
       <div className="flex gap-3">
         <a
           href="/productos"
-          className="flex items-center py-0 bg-gradient-to-r from-green-200 via-green-500 to-green-400 text-white rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300 ease-in-out"
+          className="group flex items-center py-0 bg-gradient-to-r from-green-400 via-green-600 to-green-500 text-white rounded-full shadow-xl hover:scale-105 hover:shadow-2xl transition-all duration-300 ease-in-out"
         >
           {/* Círculo con el ícono */}
-          <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-800 to-green-500 rounded-full mr-2 shadow-inner">
+          <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-700 to-green-500 rounded-full mr-2 shadow-inner group-hover:scale-110 transition-transform duration-300 animate-pulse group-hover:animate-none">
             <ShoppingCart className="w-8 h-8 text-white" />
           </div>
 
           {/* Texto */}
-          <span className="font-semibold text-sm px-6">VER PRODUCTOS</span>
+          <span className="font-bold text-sm px-6 tracking-wide group-hover:tracking-wider transition-all duration-300">
+            VER PRODUCTOS
+          </span>
         </a>
       </div>
     </main>
