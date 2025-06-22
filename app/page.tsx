@@ -4,7 +4,7 @@ import { ShoppingCart } from 'lucide-react';
 
 export default function Home() {
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-10 max-w-screen-xxl mx-auto bg-gray-100">
+    <main className="flex flex-col items-center justify-center min-h-screen p-10 max-w-screen-xxl mx-auto">
       <div className="flex gap-3">
         <a
           href="/productos"
@@ -17,7 +17,7 @@ export default function Home() {
 
           {/* Texto */}
           <span className="font-bold text-sm px-6 tracking-wide group-hover:tracking-wider transition-all duration-300">
-            VER PRODUCTOS
+            VER COMERCIOS
           </span>
         </a>
       </div>
