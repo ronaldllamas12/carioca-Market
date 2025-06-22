@@ -1,4 +1,5 @@
 import { connectToDatabase } from '@/lib/mongodb';
+import bcrypt from 'bcryptjs';
 
 export async function POST(request: Request) {
     try {
@@ -24,11 +25,14 @@ export async function POST(request: Request) {
                 { status: 400 }
             );
         }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
         const role = email === 'ronaldllamas17@gmail.com' ? 'admin' : 'user';
         await db.collection('users').insertOne({
             nombre,
             email,
-            password,
+            password: hashedPassword,
             telefono,
             role,
             createdAt: new Date(),
