@@ -4,14 +4,23 @@ import { ShoppingCart } from 'lucide-react';
 
 export default function Home() {
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-10 max-w-screen-xxl mx-auto">
+    <main
+      className="flex flex-col items-center justify-end min-h-screen p-10 pb-12 max-w-screen-xxl mx-auto"
+      style={{
+        backgroundImage: "url('/Bienvenido al Marketplace Iguazú.png')",
+        backgroundSize: 'contain',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundColor: 'black',
+      }}
+    >
       <div className="flex gap-3">
         <a
           href="/productos"
-          className="group flex items-center py-0 bg-gradient-to-r from-green-400 via-green-600 to-green-500 text-white rounded-full shadow-xl hover:scale-105 hover:shadow-2xl transition-all duration-300 ease-in-out"
+          className="group flex items-center py-0 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white rounded-full shadow-xl hover:scale-105 hover:shadow-2xl transition-all duration-300 ease-in-out animate-bounce hover:animate-none"
         >
           {/* Círculo con el ícono */}
-          <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-700 to-green-500 rounded-full mr-2 shadow-inner group-hover:scale-110 transition-transform duration-300 animate-pulse group-hover:animate-none">
+          <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-500 rounded-full mr-2 shadow-inner group-hover:scale-110 transition-transform duration-300">
             <ShoppingCart className="w-8 h-8 text-white" />
           </div>
 
