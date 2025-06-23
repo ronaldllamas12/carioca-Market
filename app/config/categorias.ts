@@ -20,6 +20,6 @@ export const CATEGORIAS = [
     "Plomería",
     "Carpintería",
     "Obra Blanca",
-    "Técnico en Refrigeración"
-    "Otros",
+    "Técnico en Refrigeración",
+    "Otros"
 ]; 
