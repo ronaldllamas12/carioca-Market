@@ -6,7 +6,7 @@ export const CATEGORIAS = [
     "Juguetes",
     "Libros",
     "Mascotas",
-    "viverres y Abarrotes",
+    "Viveres y Abarrotes",
     "Tecnologia",
     "Perfumeria",
     "Comida Rapida",
@@ -21,5 +21,27 @@ export const CATEGORIAS = [
     "Carpintería",
     "Obra Blanca",
     "Técnico en Refrigeración",
-    "Otros"
-]; 
+    "Otros",
+    // Nuevas categorías sugeridas
+    "Papelería",
+    "Panadería",
+    "Farmacia",
+    "Ferretería",
+    "Zapatería",
+    "Jardinería",
+    "Electrodomésticos",
+    "Mueblería",
+    "Bicicletería",
+    "Tienda de Ropa Deportiva",
+    "Tienda de Celulares",
+    "Tienda de Regalos",
+    "Tienda de Cosméticos",
+    "Tienda de Accesorios",
+    "Tienda de Juguetes",
+    "Tienda de Computadoras",
+    "Tienda de Videojuegos",
+    "Tienda de Pinturas",
+    "Tienda de Autoservicio",
+    "Tienda de Licores",
+    "Tienda de Alimentos Naturales"
+];
