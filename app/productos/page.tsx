@@ -137,39 +137,57 @@ export default function ComerciosPage() {
                         No se encontraron comercios para tu búsqueda.
                     </div>
                 )}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="max-w-4xl mx-auto space-y-6">
                     {comerciosFiltrados.map(comercio => (
-                        <div key={comercio._id} className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center transform transition duration-300 hover:scale-105 hover:shadow-2xl">
-                            <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-blue-300 mb-4">
-                                <Image
-                                    src={comercio.imagen}
-                                    alt={comercio.nombre}
-                                    className="w-full h-full object-cover"
-                                    width={128}
-                                    height={128}
-                                />
-                            </div>
-                            <h3 className="font-bold text-2xl text-blue-700 mb-2">{comercio.nombre}</h3>
-                            <div className="text-gray-600 text-sm mb-2 text-center">
-                                <span className="font-semibold">Productos en venta:</span> {Array.isArray(comercio.productosVenta) ? comercio.productosVenta.join(', ') : ''}
-                            </div>
-                            <div className="flex justify-center items-center gap-4 mt-4 w-full">
-                                {isAdmin && session?.user?.email === comercio.adminEmail && (
-                                    <button
-                                        onClick={() => router.push(`/productos/editar/${comercio._id}`)}
-                                        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg font-semibold shadow hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300"
-                                    >
-                                        <Edit size={16} /> Editar
-                                    </button>
-                                )}
-                                <a
-                                    href={`https://wa.me/${comercio.telefono}?text=Hola,%20estoy%20interesado%20en%20sus%20productos.`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-lg font-semibold shadow hover:from-green-600 hover:to-teal-600 transition-all duration-300"
-                                >
-                                    <MessageCircle size={16} /> Contáctanos
-                                </a>
+                        <div key={comercio._id} className="bg-white rounded-xl shadow-lg p-6 transform transition duration-300 hover:scale-[1.02] hover:shadow-2xl border border-gray-100">
+                            <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+                                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-3 border-blue-300 shadow-lg flex-shrink-0">
+                                    <Image
+                                        src={comercio.imagen}
+                                        alt={comercio.nombre}
+                                        className="w-full h-full object-cover"
+                                        width={128}
+                                        height={128}
+                                    />
+                                </div>
+                                <div className="flex-1 text-center md:text-left">
+                                    <h3 className="font-serif text-3xl md:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-blue-800 via-purple-700 to-indigo-800 mb-3 font-bold tracking-wide">
+                                        {comercio.nombre}
+                                    </h3>
+                                    <div className="text-gray-700 text-base mb-4 leading-relaxed">
+                                        <span className="font-semibold text-gray-800">Productos en venta:</span>
+                                        <div className="mt-2 flex flex-wrap gap-2 justify-center md:justify-start">
+                                            {Array.isArray(comercio.productosVenta) ?
+                                                comercio.productosVenta.map((producto, index) => (
+                                                    <span
+                                                        key={index}
+                                                        className="inline-block px-3 py-1 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 rounded-full text-sm font-medium border border-blue-200"
+                                                    >
+                                                        {producto}
+                                                    </span>
+                                                )) : ''
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col sm:flex-row justify-center md:justify-start items-center gap-3 mt-4">
+                                        {isAdmin && session?.user?.email === comercio.adminEmail && (
+                                            <button
+                                                onClick={() => router.push(`/productos/editar/${comercio._id}`)}
+                                                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg font-semibold shadow-lg hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 transform hover:scale-105"
+                                            >
+                                                <Edit size={18} /> Editar
+                                            </button>
+                                        )}
+                                        <a
+                                            href={`https://wa.me/${comercio.telefono}?text=Hola,%20estoy%20interesado%20en%20sus%20productos.`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-lg font-semibold shadow-lg hover:from-green-600 hover:to-teal-600 transition-all duration-300 transform hover:scale-105"
+                                        >
+                                            <MessageCircle size={18} /> Contáctanos
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     ))}
