@@ -15,5 +15,11 @@ export const CATEGORIAS = [
     "Turismo",
     "Construccion",
     "Variedades",
+    "Servicio Eléctrico",
+    "Herreria",
+    "Plomería",
+    "Carpintería",
+    "Obra Blanca",
+    "Técnico en Refrigeración"
     "Otros",
 ]; 
