@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { writeFile } from 'fs/promises';
-import { join } from 'path';
+import cloudinary from '@/lib/cloudinary';
+import { Readable } from 'stream';
 
 export async function POST(request: Request) {
     try {
@@ -17,24 +17,40 @@ export async function POST(request: Request) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // Crear un nombre único para el archivo
-        const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
-        const filename = `${uniqueSuffix}-${file.name}`;
+        const uploadResult = await new Promise((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+                {
+                    folder: 'marketplace-app', // Opcional: para organizar en Cloudinary
+                    resource_type: 'image'
+                },
+                (error, result) => {
+                    if (error) {
+                        return reject(error);
+                    }
+                    resolve(result);
+                }
+            );
+            const readableStream = new Readable();
+            readableStream._read = () => { };
+            readableStream.push(buffer);
+            readableStream.push(null);
+            readableStream.pipe(stream);
+        });
 
-        // Asegurarse de que el directorio existe
-        const uploadDir = join(process.cwd(), 'public', 'uploads');
-        const path = join(uploadDir, filename);
+        // Asegurarnos de que el tipo de uploadResult sea el correcto
+        const result = uploadResult as { secure_url?: string };
 
-        // Guardar el archivo
-        await writeFile(path, buffer);
+        if (!result || !result.secure_url) {
+            throw new Error('No se pudo obtener la URL segura de Cloudinary.');
+        }
 
-        // Devolver la URL de la imagen
         return NextResponse.json({
-            url: `/uploads/${filename}`,
+            url: result.secure_url,
             success: true
         });
+
     } catch (error) {
-        console.error('Error al subir el archivo:', error);
+        console.error('Error al subir el archivo a Cloudinary:', error);
         return NextResponse.json(
             { error: 'Error al subir el archivo' },
             { status: 500 }
