@@ -141,7 +141,7 @@ export default function ComerciosPage() {
                     {comerciosFiltrados.map(comercio => (
                         <div key={comercio._id} className="bg-white rounded-xl shadow-lg p-6 transform transition duration-300 hover:scale-[1.02] hover:shadow-2xl border border-gray-100">
                             <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-                                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-3 border-blue-300 shadow-lg flex-shrink-0">
+                                <div className="w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border-3 border-blue-300 shadow-lg flex-shrink-0">
                                     <Image
                                         src={comercio.imagen}
                                         alt={comercio.nombre}
