@@ -20,7 +20,7 @@ export async function POST(request: Request) {
         const uploadResult = await new Promise((resolve, reject) => {
             const stream = cloudinary.uploader.upload_stream(
                 {
-                    folder: 'marketplace-app', // Opcional: para organizar en Cloudinary
+                    folder: 'marketplaces', // Corregido: para organizar en Cloudinary
                     resource_type: 'image'
                 },
                 (error, result) => {
