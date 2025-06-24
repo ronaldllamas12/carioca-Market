@@ -9,13 +9,13 @@ export default function Home() {
       className="flex flex-col items-center justify-center min-h-screen px-6 md:px-10 pb-12 max-w-screen-xxl mx-auto bg-black relative overflow-hidden"
       style={{
         backgroundImage: "url('/Bienvenido al Marketplace Iguazú.png')",
-        backgroundSize: 'cover',
+        backgroundSize: 'contain',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
       }}
     >
       {/* Capa oscura para mejor visibilidad */}
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-10"></div>
+      <div className="absolute inset-0 bg-black/45 backdrop-blur-15"></div>
 
       <motion.div
         className="flex flex-col items-center text-center z-10"

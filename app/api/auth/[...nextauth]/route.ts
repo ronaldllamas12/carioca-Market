@@ -32,7 +32,11 @@ const handler = NextAuth({
                         role: user.role
                     };
                 } catch (error) {
-                    throw error;
+                    if (error instanceof Error) {
+                        throw new Error('Error de autenticación: ' + error.message);
+                    } else {
+                        throw new Error('Error de autenticación desconocido');
+                    }
                 }
             }
         })
@@ -60,4 +64,4 @@ const handler = NextAuth({
     debug: true,
 });
 
-export { handler as GET, handler as POST }; 
+export { handler as GET, handler as POST };

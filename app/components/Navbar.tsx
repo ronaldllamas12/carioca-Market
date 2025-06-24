@@ -21,7 +21,7 @@ export default function Navbar() {
                         {session ? (
                             <>
                                 <div className="flex items-center gap-2 text-white font-semibold">
-                                    <User size={24} />
+                                    <User size={20} />
                                     <span className="hidden sm:inline">{session.user?.name}</span>
                                 </div>
                                 <LogoutButton />
@@ -29,7 +29,7 @@ export default function Navbar() {
                         ) : (
                             <Link
                                 href="/auth/signin"
-                                className="px-4 py-2 text-base font-medium text-white bg-blue-700 rounded-md hover:bg-blue-800 transition-colors shadow"
+                                className="px-3 py-2 text-base font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 transition-colors shadow"
                             >
                                 Iniciar Sesión
                             </Link>
