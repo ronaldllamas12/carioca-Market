@@ -1,7 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { connectToDatabase } from "@/lib/mongodb";
-import bcrypt from 'bcryptjs';
 import type { JWT } from "next-auth/jwt";
 import type { Session, User } from "next-auth";
 
@@ -18,18 +17,14 @@ const handler = NextAuth({
                     if (!credentials?.email || !credentials?.password) {
                         throw new Error('Credenciales requeridas');
                     }
-
                     const { db } = await connectToDatabase();
                     const user = await db.collection('users').findOne({ email: credentials.email, role: 'admin' });
                     if (!user) {
                         throw new Error('Usuario no encontrado');
                     }
-
-                    const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
-                    if (!isPasswordValid) {
+                    if (user.password !== credentials.password) {
                         throw new Error('Contraseña incorrecta');
                     }
-
                     return {
                         id: user._id.toString(),
                         email: user.email,
@@ -37,7 +32,11 @@ const handler = NextAuth({
                         role: user.role
                     };
                 } catch (error) {
-                    throw new Error('Error de autenticación: ' + error.message);
+                    if (error instanceof Error) {
+                        throw new Error('Error de autenticación: ' + error.message);
+                    } else {
+                        throw new Error('Error de autenticación desconocido');
+                    }
                 }
             }
         })
