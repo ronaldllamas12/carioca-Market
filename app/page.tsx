@@ -15,7 +15,7 @@ export default function Home() {
       }}
     >
       {/* Capa oscura para mejor visibilidad */}
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-13"></div>
+      <div className="absolute inset-0 bg-black/45 backdrop-blur-15"></div>
 
       <motion.div
         className="flex flex-col items-center text-center z-10"
