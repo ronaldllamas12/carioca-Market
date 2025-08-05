@@ -6,12 +6,13 @@ import { ObjectId } from 'mongodb';
 // GET: Obtener productos de un comercio específico
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const { db } = await connectToDatabase();
         const comercio = await db.collection('comercios').findOne({
-            _id: new ObjectId(params.id)
+            _id: new ObjectId(id)
         });
 
         if (!comercio) {
@@ -23,7 +24,7 @@ export async function GET(
 
         // Obtener productos del comercio (si existe la colección)
         const productos = await db.collection('productos').find({
-            comercioId: params.id
+            comercioId: id
         }).toArray();
 
         return NextResponse.json({
@@ -42,9 +43,10 @@ export async function GET(
 // POST: Agregar producto a un comercio (solo admin del comercio)
 export async function POST(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const session = await getServerSession();
         if (!session?.user?.email) {
             return NextResponse.json(
@@ -57,7 +59,7 @@ export async function POST(
 
         // Verificar que el comercio existe y pertenece al usuario
         const comercio = await db.collection('comercios').findOne({
-            _id: new ObjectId(params.id),
+            _id: new ObjectId(id),
             adminEmail: session.user.email
         });
 
@@ -70,7 +72,7 @@ export async function POST(
 
         const data = await request.json();
         const nuevoProducto = {
-            comercioId: params.id,
+            comercioId: id,
             nombre: data.nombre,
             descripcion: data.descripcion,
             precio: data.precio,
