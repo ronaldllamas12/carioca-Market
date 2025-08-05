@@ -1,11 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { connectToDatabase } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 
 // GET: Obtener productos de un comercio específico
 export async function GET(
-    request: Request,
+    request: NextRequest,
     { params }: { params: { id: string } }
 ) {
     try {
@@ -41,7 +41,7 @@ export async function GET(
 
 // POST: Agregar producto a un comercio (solo admin del comercio)
 export async function POST(
-    request: Request,
+    request: NextRequest,
     { params }: { params: { id: string } }
 ) {
     try {
@@ -94,4 +94,4 @@ export async function POST(
             { status: 500 }
         );
     }
-} 
+}
