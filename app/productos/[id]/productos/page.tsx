@@ -1,18 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
 import Navbar from "../../../components/Navbar";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     ArrowLeft,
-    Package,
     Plus,
-    Image as ImageIcon,
-    Tag,
     DollarSign,
-    Edit,
     Trash2,
     ShoppingCart,
     Star,
@@ -80,13 +76,7 @@ export default function ProductosComercioPage() {
         }
     }, [session]);
 
-    useEffect(() => {
-        if (comercioId) {
-            fetchProductos();
-        }
-    }, [comercioId]);
-
-    const fetchProductos = async () => {
+    const fetchProductos = useCallback(async () => {
         try {
             setLoading(true);
             const response = await fetch(`/api/productos/${comercioId}/productos`);
@@ -102,7 +92,13 @@ export default function ProductosComercioPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [comercioId]);
+
+    useEffect(() => {
+        if (comercioId) {
+            fetchProductos();
+        }
+    }, [comercioId, fetchProductos]);
 
     const handleAddProduct = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -627,4 +623,4 @@ export default function ProductosComercioPage() {
             </main>
         </>
     );
-} 
+}

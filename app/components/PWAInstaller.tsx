@@ -4,8 +4,17 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download, X, Smartphone } from 'lucide-react';
 
+interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: Array<string>;
+  readonly userChoice: Promise<{
+    outcome: 'accepted' | 'dismissed';
+    platform: string;
+  }>;
+  prompt(): Promise<void>;
+}
+
 export default function PWAInstaller() {
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
 
@@ -17,9 +26,9 @@ export default function PWAInstaller() {
     }
 
     // Escuchar el evento beforeinstallprompt
-    const handleBeforeInstallPrompt = (e: any) => {
+    const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
-      setDeferredPrompt(e);
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
       setShowInstallPrompt(true);
     };
 
@@ -126,4 +135,4 @@ export default function PWAInstaller() {
       </motion.div>
     </AnimatePresence>
   );
-} 
+}

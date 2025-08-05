@@ -1,6 +1,6 @@
 "use client";
 
-import { ImagePlus, X, Upload, Loader2 } from "lucide-react";
+import { X, Upload, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
@@ -180,4 +180,4 @@ export default function ImageUpload({ onChange, value, label = "Imagen" }: Image
             )}
         </div>
     );
-} 
+}
