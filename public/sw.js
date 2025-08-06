@@ -39,44 +39,53 @@ self.addEventListener('activate', (event) => {
 
 // Interceptar peticiones
 self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+
+  // Ignorar peticiones que no sean http(s)
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Devolver cache si existe
-        if (response) {
-          return response;
-        }
-        
-        // Si no está en cache, hacer petición a red
-        return fetch(event.request)
-          .then((response) => {
-            // No cachear peticiones que no sean GET
-            if (!response || response.status !== 200 || response.type !== 'basic' || event.request.method !== 'GET') {
-              return response;
-            }
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
 
-            // Clonar la respuesta para cachearla
-            const responseToCache = response.clone();
-            if (event.request.url.startsWith('http') || event.request.url.startsWith('https')) {
-              caches.open(CACHE_NAME)
-                .then((cache) => {
-                  cache.put(event.request, responseToCache);
-                });
-            }
+      return fetch(event.request)
+        .then((networkResponse) => {
+          // Validar respuesta
+          if (
+            !networkResponse ||
+            networkResponse.status !== 200 ||
+            networkResponse.type !== 'basic' ||
+            event.request.method !== 'GET'
+          ) {
+            return networkResponse;
+          }
 
-            return response;
-          })
-          .catch(() => {
-            // Si falla la red, devolver página offline
-            if (event.request.destination === 'document') {
-              return caches.match('/offline.html');
-            }
-          });
-      })
+          const responseToCache = networkResponse.clone();
+
+          caches.open(CACHE_NAME)
+            .then((cache) => {
+              cache.put(event.request, responseToCache).catch((err) => {
+                console.warn('No se pudo cachear:', event.request.url, err);
+              });
+            });
+
+          return networkResponse;
+        })
+        .catch(() => {
+          // Si falla la red y es un documento HTML, mostrar página offline
+          if (event.request.destination === 'document') {
+            return caches.match('/offline.html');
+          }
+        });
+    })
   );
 });
 
-// Manejar mensajes del cliente
+// Escuchar mensajes (por ejemplo, para activar skipWaiting desde el cliente)
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
