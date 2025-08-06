@@ -57,10 +57,12 @@ self.addEventListener('fetch', (event) => {
 
             // Clonar la respuesta para cachearla
             const responseToCache = response.clone();
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache);
-              });
+            if (event.request.url.startsWith('http') || event.request.url.startsWith('https')) {
+              caches.open(CACHE_NAME)
+                .then((cache) => {
+                  cache.put(event.request, responseToCache);
+                });
+            }
 
             return response;
           })
