@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { connectToDatabase } from "@/lib/mongodb";
 import type { JWT } from "next-auth/jwt";
 import type { Session, User } from "next-auth";
+import bcrypt from 'bcryptjs';
 
 const handler = NextAuth({
     providers: [
@@ -22,9 +23,12 @@ const handler = NextAuth({
                     if (!user) {
                         throw new Error('Usuario no encontrado');
                     }
-                    if (user.password !== credentials.password) {
+
+                    const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+                    if (!isPasswordValid) {
                         throw new Error('Contraseña incorrecta');
                     }
+
                     return {
                         id: user._id.toString(),
                         email: user.email,
