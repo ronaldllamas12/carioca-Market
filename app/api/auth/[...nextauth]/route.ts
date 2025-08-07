@@ -14,21 +14,35 @@ const handler = NextAuth({
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials) {
+                console.log("Iniciando autorización con credenciales:", credentials?.email);
                 try {
                     if (!credentials?.email || !credentials?.password) {
+                        console.error("Error: Credenciales incompletas.");
                         throw new Error('Credenciales requeridas');
                     }
+                    
+                    console.log("Conectando a la base de datos...");
                     const { db } = await connectToDatabase();
+                    console.log("Buscando usuario administrador:", credentials.email);
+                    
                     const user = await db.collection('users').findOne({ email: credentials.email, role: 'admin' });
+                    
                     if (!user) {
+                        console.error("Error: Usuario administrador no encontrado en la BD.");
                         throw new Error('Usuario no encontrado');
                     }
+                    
+                    console.log("Usuario encontrado:", user.email);
+                    console.log("Comparando contraseñas...");
 
                     const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+                    
                     if (!isPasswordValid) {
+                        console.error("Error: La contraseña no coincide.");
                         throw new Error('Contraseña incorrecta');
                     }
 
+                    console.log("¡Contraseña válida! Autorización exitosa.");
                     return {
                         id: user._id.toString(),
                         email: user.email,

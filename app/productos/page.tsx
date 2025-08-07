@@ -18,6 +18,24 @@ interface Comercio {
     adminEmail: string;
 }
 
+export const metadata = {
+    title: 'Comercios - Market Iguazú',
+    description: 'Explora todos los comercios disponibles en Market Iguazú.',
+    keywords: 'comercios, tiendas, negocios, Iguazú, Misiones, marketplace',
+};
+
+export const viewport = {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+    viewportFit: 'cover',
+    themeColor: [
+        { media: '(prefers-color-scheme: light)', color: '#7c3aed' },
+        { media: '(prefers-color-scheme: dark)', color: '#1e293b' },
+    ],
+};
+
 export default function ComerciosPage() {
     const { data: session } = useSession();
     const router = useRouter();
@@ -30,11 +48,10 @@ export default function ComerciosPage() {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        if (session?.user?.email) {
-            fetch('/api/auth/check-admin')
-                .then(res => res.json())
-                .then(data => setIsAdmin(data.isAdmin))
-                .catch(err => console.error('Error al verificar admin:', err));
+        if (session?.user && 'role' in session.user && (session.user as any).role === 'admin') {
+            setIsAdmin(true);
+        } else {
+            setIsAdmin(false);
         }
     }, [session]);
 
@@ -229,13 +246,19 @@ export default function ComerciosPage() {
                                                     whileHover={{ scale: 1.05 }}
                                                     transition={{ duration: 0.3 }}
                                                 >
-                                                    <Image
-                                                        src={comercio.imagen}
-                                                        alt={comercio.nombre}
-                                                        className="w-full h-full object-cover"
-                                                        width={160}
-                                                        height={160}
-                                                    />
+                                                    {typeof comercio.imagen === 'string' && comercio.imagen ? (
+                                                        <Image
+                                                            src={comercio.imagen}
+                                                            alt={comercio.nombre}
+                                                            className="w-full h-full object-cover"
+                                                            width={160}
+                                                            height={160}
+                                                        />
+                                                    ) : (
+                                                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                                                            <span className="text-gray-500 text-xs">Sin imagen</span>
+                                                        </div>
+                                                    )}
                                                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                                                     <div className="absolute top-3 left-3 px-2 py-1 bg-white/90 backdrop-blur-sm rounded-full">
                                                         <span className="text-xs font-semibold text-slate-700">{comercio.categoria}</span>
@@ -323,4 +346,4 @@ export default function ComerciosPage() {
             </main>
         </>
     );
-} 
+}

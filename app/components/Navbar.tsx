@@ -1,13 +1,35 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import LogoutButton from "./LogoutButton";
-import { User, ShoppingBag, Home } from "lucide-react";
+import { User, ShoppingBag, Home, PlusCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import axios from "axios";
 
 export default function Navbar() {
     const { data: session } = useSession();
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(() => {
+        const checkAdminStatus = async () => {
+            if (session) {
+                console.log("Sesión en Navbar:", session); // Agregado para depuración
+                try {
+                    const response = await axios.get("/api/auth/check-admin");
+                    setIsAdmin(response.data.isAdmin);
+                    console.log("Es administrador:", response.data.isAdmin); // Agregado para depuración
+                } catch (error) {
+                    console.error("Error al verificar el estado de administrador:", error);
+                    setIsAdmin(false);
+                }
+            } else {
+                setIsAdmin(false);
+            }
+        };
+        checkAdminStatus();
+    }, [session]);
 
     return (
         <motion.nav
@@ -114,4 +136,4 @@ export default function Navbar() {
             </div>
         </motion.nav>
     );
-} 
+}

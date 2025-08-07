@@ -30,16 +30,15 @@ export default function SignIn() {
             console.log('Intentando iniciar sesión con:', { email });
 
             const result = await signIn('credentials', {
+                redirect: false,
                 email,
                 password,
-                redirect: false,
             });
 
-            console.log('Resultado del inicio de sesión:', result);
-
             if (result?.error) {
-                setError(result.error);
-            } else {
+                setError('Credenciales inválidas');
+                console.error('Error de inicio de sesión:', result.error);
+            } else if (result?.ok) {
                 router.push('/productos');
             }
         } catch (error) {
@@ -103,4 +102,4 @@ export default function SignIn() {
             </div>
         </div>
     );
-} 
+}

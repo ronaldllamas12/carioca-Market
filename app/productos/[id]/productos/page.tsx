@@ -57,6 +57,7 @@ export default function ProductosComercioPage() {
     }>({ message: '', type: 'info', isVisible: false });
     const [isAdmin, setIsAdmin] = useState(false);
     const [showAddForm, setShowAddForm] = useState(false);
+    const [showEditForm, setShowEditForm] = useState(false); // Nuevo estado para el formulario de edición
     const [showProductDetails, setShowProductDetails] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Producto | null>(null);
     const [newProduct, setNewProduct] = useState({
@@ -66,6 +67,7 @@ export default function ProductosComercioPage() {
         imagen: '',
         categoria: ''
     });
+    const [editProduct, setEditProduct] = useState<Producto | null>(null); // Nuevo estado para el producto a editar
 
     useEffect(() => {
         if (session?.user?.email) {
@@ -158,6 +160,120 @@ export default function ProductosComercioPage() {
             console.error('Error:', err);
             setNotification({
                 message: err instanceof Error ? err.message : 'Error al agregar producto',
+                type: 'error',
+                isVisible: true
+            });
+        }
+    };
+
+    const handleEditProduct = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!editProduct) return;
+
+        // Verificar que el usuario esté autenticado
+        if (!session) {
+            setNotification({
+                message: 'Debes iniciar sesión para editar productos',
+                type: 'error',
+                isVisible: true
+            });
+            return;
+        }
+
+        // Verificar que el usuario sea admin del comercio
+        if (!isAdmin || session.user?.email !== comercio?.adminEmail) {
+            setNotification({
+                message: 'No tienes permisos para editar productos de este comercio',
+                type: 'error',
+                isVisible: true
+            });
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/productos/${comercioId}/productos`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ...editProduct,
+                    precio: parseFloat(editProduct.precio.toString()) // Asegurar que el precio sea un número
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error al actualizar producto');
+            }
+
+            setShowEditForm(false);
+            setEditProduct(null);
+            setNotification({
+                message: 'Producto actualizado exitosamente',
+                type: 'success',
+                isVisible: true
+            });
+            fetchProductos(); // Recargar productos
+        } catch (err) {
+            console.error('Error:', err);
+            setNotification({
+                message: err instanceof Error ? err.message : 'Error al actualizar producto',
+                type: 'error',
+                isVisible: true
+            });
+        }
+    };
+
+    const handleDeleteProduct = async (productId: string) => {
+        if (!confirm('¿Estás seguro de que quieres eliminar este producto?')) {
+            return;
+        }
+
+        // Verificar que el usuario esté autenticado
+        if (!session) {
+            setNotification({
+                message: 'Debes iniciar sesión para eliminar productos',
+                type: 'error',
+                isVisible: true
+            });
+            return;
+        }
+
+        // Verificar que el usuario sea admin del comercio
+        if (!isAdmin || session.user?.email !== comercio?.adminEmail) {
+            setNotification({
+                message: 'No tienes permisos para eliminar productos de este comercio',
+                type: 'error',
+                isVisible: true
+            });
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/productos/${comercioId}/productos`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ productId }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error al eliminar producto');
+            }
+
+            setNotification({
+                message: 'Producto eliminado exitosamente',
+                type: 'success',
+                isVisible: true
+            });
+            fetchProductos(); // Recargar productos
+        } catch (err) {
+            console.error('Error:', err);
+            setNotification({
+                message: err instanceof Error ? err.message : 'Error al eliminar producto',
                 type: 'error',
                 isVisible: true
             });
@@ -259,26 +375,28 @@ export default function ProductosComercioPage() {
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-center md:justify-start gap-4">
-                                        <a
-                                            href={`https://wa.me/${comercio.telefono}?text=Hola,%20estoy%20interesado%20en%20sus%20productos.`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-green-500/25 transition-all duration-300"
-                                        >
-                                            <Phone className="w-4 h-4" />
-                                            Contactar
-                                        </a>
-                                        {isAdmin && session?.user?.email === comercio.adminEmail && (
-                                            <motion.button
-                                                onClick={() => setShowAddForm(true)}
-                                                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-purple-500/25 transition-all duration-300"
-                                                whileHover={{ scale: 1.05 }}
-                                                whileTap={{ scale: 0.95 }}
+                                        <div className="flex flex-row gap-2"> {/* Contenedor para los botones */}
+                                            <a
+                                                href={`https://wa.me/${comercio.telefono}?text=Hola,%20estoy%20interesado%20en%20sus%20productos.`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-green-500/25 transition-all duration-300"
                                             >
-                                                <Plus className="w-4 h-4" />
-                                                Agregar Producto
-                                            </motion.button>
-                                        )}
+                                                <Phone className="w-4 h-4" />
+                                                Contactar
+                                            </a>
+                                            {isAdmin && session?.user?.email === comercio.adminEmail && (
+                                                <motion.button
+                                                    onClick={() => setShowAddForm(true)}
+                                                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-purple-500/25 transition-all duration-300"
+                                                    whileHover={{ scale: 1.05 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                >
+                                                    <Plus className="w-4 h-4" />
+                                                    Agregar Producto
+                                                </motion.button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -355,13 +473,27 @@ export default function ProductosComercioPage() {
                                                 Ver Detalles
                                             </motion.button>
                                             {isAdmin && session?.user?.email === comercio.adminEmail && (
-                                                <motion.button
-                                                    className="p-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors"
-                                                    whileHover={{ scale: 1.05 }}
-                                                    whileTap={{ scale: 0.95 }}
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </motion.button>
+                                                <>
+                                                    <motion.button
+                                                        onClick={() => {
+                                                            setEditProduct(producto);
+                                                            setShowEditForm(true);
+                                                        }}
+                                                        className="p-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors"
+                                                        whileHover={{ scale: 1.05 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                                                    </motion.button>
+                                                    <motion.button
+                                                        onClick={() => handleDeleteProduct(producto._id)}
+                                                        className="p-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors"
+                                                        whileHover={{ scale: 1.05 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </motion.button>
+                                                </>
                                             )}
                                         </div>
                                     </div>
@@ -488,6 +620,95 @@ export default function ProductosComercioPage() {
                                             className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-purple-500/25 transition-all duration-300"
                                         >
                                             Agregar Producto
+                                        </button>
+                                    </div>
+                                </form>
+                            </motion.div>
+                        </div>
+                    )}
+
+                    {/* Modal para editar producto */}
+                    {showEditForm && editProduct && (
+                        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+                            <motion.div
+                                className="bg-white/95 backdrop-blur-md rounded-3xl p-6 w-full max-w-md shadow-2xl border border-white/20"
+                                initial={{ scale: 0.9, y: 20 }}
+                                animate={{ scale: 1, y: 0 }}
+                                exit={{ scale: 0.9, y: 20 }}
+                            >
+                                <h3 className="text-xl font-bold text-slate-800 mb-4">Editar Producto</h3>
+                                <form onSubmit={handleEditProduct} className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                            Nombre del Producto
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={editProduct.nombre}
+                                            onChange={(e) => setEditProduct({ ...editProduct, nombre: e.target.value })}
+                                            className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300"
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                            Descripción
+                                        </label>
+                                        <textarea
+                                            value={editProduct.descripcion}
+                                            onChange={(e) => setEditProduct({ ...editProduct, descripcion: e.target.value })}
+                                            className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300"
+                                            rows={3}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                                Precio
+                                            </label>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={editProduct.precio}
+                                                onChange={(e) => setEditProduct({ ...editProduct, precio: parseFloat(e.target.value) })}
+                                                className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300"
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                                Categoría
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={editProduct.categoria}
+                                                onChange={(e) => setEditProduct({ ...editProduct, categoria: e.target.value })}
+                                                className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <ImageUpload
+                                            value={editProduct.imagen}
+                                            onChange={(url) => setEditProduct({ ...editProduct, imagen: url })}
+                                            label="Imagen del Producto"
+                                        />
+                                    </div>
+                                    <div className="flex gap-3 pt-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowEditForm(false)}
+                                            className="flex-1 px-4 py-3 text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors"
+                                        >
+                                            Cancelar
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-purple-500/25 transition-all duration-300"
+                                        >
+                                            Guardar Cambios
                                         </button>
                                     </div>
                                 </form>

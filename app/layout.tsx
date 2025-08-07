@@ -1,25 +1,25 @@
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import Providers from "./components/Providers";
-import PWAInstaller from "./components/PWAInstaller";
+import { Geist, Geist_Mono } from 'next/font/google';
+import './globals.css';
+import Providers from './components/Providers';
+import PWAInstaller from './components/PWAInstaller';
 
 const geistSans = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist-sans",
+  subsets: ['latin'],
+  variable: '--font-geist-sans',
 });
 
 const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
+  subsets: ['latin'],
+  variable: '--font-geist-mono',
 });
 
 export const metadata = {
-  title: "Market Iguazú - Comercios Locales",
-  description: "Descubre y conecta con comercios locales de Iguazú, Misiones. Encuentra productos, servicios y contacta directamente con los comerciantes.",
-  keywords: "Iguazú, Misiones, comercios, locales, marketplace, productos, servicios",
-  authors: [{ name: "Market Iguazú" }],
-  creator: "Market Iguazú",
-  publisher: "Market Iguazú",
+  title: 'Market Iguazú - Comercios Locales',
+  description: 'Descubre y conecta con comercios locales de Iguazú, Misiones. Encuentra productos, servicios y contacta directamente con los comerciantes.',
+  keywords: 'Iguazú, Misiones, comercios, locales, marketplace, productos, servicios',
+  authors: [{ name: 'Market Iguazú' }],
+  creator: 'Market Iguazú',
+  publisher: 'Market Iguazú',
   formatDetection: {
     email: false,
     address: false,
@@ -30,8 +30,8 @@ export const metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: "Market Iguazú - Comercios Locales",
-    description: "Descubre y conecta con comercios locales de Iguazú, Misiones",
+    title: 'Market Iguazú - Comercios Locales',
+    description: 'Descubre y conecta con comercios locales de Iguazú, Misiones',
     url: 'https://market-iguazu.vercel.app',
     siteName: 'Market Iguazú',
     images: [
@@ -47,8 +47,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Market Iguazú - Comercios Locales",
-    description: "Descubre y conecta con comercios locales de Iguazú, Misiones",
+    title: 'Market Iguazú - Comercios Locales',
+    description: 'Descubre y conecta con comercios locales de Iguazú, Misiones',
     images: ['/logo.png'],
   },
   robots: {
@@ -76,33 +76,30 @@ export const metadata = {
     capable: true,
     statusBarStyle: 'default',
     title: 'Market Iguazú',
-    startupImage: [
-      '/icons/icon-512x512.png',
-    ],
+    startupImage: ['/icons/icon-512x512.png'],
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-    viewportFit: 'cover',
-  },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#7c3aed' },
     { media: '(prefers-color-scheme: dark)', color: '#1e293b' },
   ],
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers>{children}</Providers>
-        <PWAInstaller />
+        <Providers>
+          {children}
+          <PWAInstaller />
+        </Providers>
       </body>
     </html>
   );
