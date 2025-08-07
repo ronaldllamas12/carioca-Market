@@ -91,7 +91,7 @@ export default function ComerciosPage() {
                         transition={{ duration: 0.6 }}
                     >
                         <h1 className="text-5xl md:text-6xl font-black text-gradient bg-gradient-to-r from-slate-800 via-purple-800 to-blue-800 bg-clip-text text-transparent mb-4">
-                            Comercios Locales
+                            Comercios Iguazú
                         </h1>
                         <p className="text-xl text-slate-600 max-w-2xl mx-auto">
                             Descubre los mejores comercios de Iguazú y conecta directamente con ellos
