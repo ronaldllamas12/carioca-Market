@@ -6,6 +6,7 @@ import type { Session, User } from "next-auth";
 import bcrypt from 'bcryptjs';
 
 const handler = NextAuth({
+    secret: process.env.NEXTAUTH_SECRET,
     providers: [
         CredentialsProvider({
             name: "Credentials",
