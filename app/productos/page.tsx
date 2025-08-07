@@ -18,24 +18,6 @@ interface Comercio {
     adminEmail: string;
 }
 
-export const metadata = {
-    title: 'Comercios - Market Iguazú',
-    description: 'Explora todos los comercios disponibles en Market Iguazú.',
-    keywords: 'comercios, tiendas, negocios, Iguazú, Misiones, marketplace',
-};
-
-export const viewport = {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-    viewportFit: 'cover',
-    themeColor: [
-        { media: '(prefers-color-scheme: light)', color: '#7c3aed' },
-        { media: '(prefers-color-scheme: dark)', color: '#1e293b' },
-    ],
-};
-
 export default function ComerciosPage() {
     const { data: session } = useSession();
     const router = useRouter();
