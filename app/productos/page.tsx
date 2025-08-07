@@ -30,7 +30,7 @@ export default function ComerciosPage() {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        if (session?.user && 'role' in session.user && (session.user as any).role === 'admin') {
+        if (session?.user && 'role' in session.user && (session.user as { role?: string }).role === 'admin') {
             setIsAdmin(true);
         } else {
             setIsAdmin(false);
