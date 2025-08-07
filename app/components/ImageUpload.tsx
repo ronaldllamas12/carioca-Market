@@ -104,7 +104,7 @@ export default function ImageUpload({ onChange, value, label = "Imagen" }: Image
                                 <Image
                                     src={value}
                                     alt="Imagen subida"
-                                    className="object-cover"
+                                    className="object-contain"
                                     fill
                                 />
                                 <div className="absolute inset-0 bg-black/20"></div>

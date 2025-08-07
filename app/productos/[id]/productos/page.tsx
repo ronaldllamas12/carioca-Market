@@ -420,7 +420,7 @@ export default function ProductosComercioPage() {
                                         <Image
                                             src={producto.imagen || 'https://via.placeholder.com/300x200/f3f4f6/6b7280?text=Producto'}
                                             alt={producto.nombre}
-                                            className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                                            className="w-full h-full object-contain transition-transform duration-300 hover:scale-110"
                                             width={300}
                                             height={200}
                                         />
@@ -757,7 +757,7 @@ export default function ProductosComercioPage() {
                                         <Image
                                             src={selectedProduct.imagen || 'https://via.placeholder.com/600x400/f3f4f6/6b7280?text=Producto'}
                                             alt={selectedProduct.nombre}
-                                            className="w-full h-full object-cover"
+                                            className="w-full h-full object-contain"
                                             fill
                                         />
                                         {!selectedProduct.disponible && (

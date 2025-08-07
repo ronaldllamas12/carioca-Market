@@ -232,7 +232,7 @@ export default function ComerciosPage() {
                                                         <Image
                                                             src={comercio.imagen}
                                                             alt={comercio.nombre}
-                                                            className="w-full h-full object-cover"
+                                                            className="w-full h-full object-contain"
                                                             width={160}
                                                             height={160}
                                                         />
